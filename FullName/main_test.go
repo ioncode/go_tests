@@ -1,6 +1,10 @@
 package main
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func TestMain(t *testing.T) {
 	tests := []struct {
@@ -36,6 +40,7 @@ func TestMain(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
+			assert.Equal(t, test.expected, test.value.FullName())
 			if actual := test.value.FullName(); actual != test.expected {
 				t.Errorf("For user %s expected result %s not equal with actual %s in case %s", test.value.LastName, test.expected, actual, test.name)
 			}

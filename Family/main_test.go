@@ -1,6 +1,11 @@
 package main
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
 
 func TestMain(t *testing.T) {
 	tests := []struct {
@@ -53,9 +58,19 @@ func TestMain(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			error := test.family.AddNew(test.relation, test.newPerson)
+			//native
 			if (error != nil) != test.expectError {
 				t.Errorf("This family cannot accept new member in role %s with error %s", test.relation, error)
 			}
+
+			//testify
+			if !test.expectError {
+				require.NoError(t, error)
+				assert.Contains(t, test.family.Members, test.relation)
+				assert.EqualValues(t, test.family.Members[test.relation], test.newPerson, "Family does not contain new person %s", test.newPerson.FirstName)
+				return
+			}
+			assert.Error(t, error)
 		})
 	}
 }
